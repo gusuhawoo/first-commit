@@ -1,14 +1,31 @@
 import axios from 'axios';
 import Input from '@/components/Input';
 import { useCallback, useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { NextPageContext } from 'next';
+import { getSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub } from 'react-icons/fa';
 
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+}
+
 const Auth = () => {
   const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +46,7 @@ const Auth = () => {
         redirect: false,
         callbackUrl: '/',
       });
-      router.push('/');
+      router.push('/profiles');
     } catch (error) {
       console.log(error);
     }
@@ -63,28 +80,22 @@ const Auth = () => {
               {variant === 'register' && (
                 <Input
                   label="Username"
-                  onChange={(ev: any) => {
-                    setName(ev.target.value);
-                  }}
+                  onChange={(e: any) => setName(e.target.value)}
                   id="name"
                   type="text"
                   value={name}
                 />
               )}
               <Input
-                label="Email"
-                onChange={(ev: any) => {
-                  setEmail(ev.target.value);
-                }}
+                label="Email address or phone number"
+                onChange={(e: any) => setEmail(e.target.value)}
                 id="email"
                 type="email"
                 value={email}
               />
               <Input
                 label="Password"
-                onChange={(ev: any) => {
-                  setPassword(ev.target.value);
-                }}
+                onChange={(e: any) => setPassword(e.target.value)}
                 id="password"
                 type="password"
                 value={password}
@@ -98,9 +109,9 @@ const Auth = () => {
             </button>
             <div className="flex flex-row items-center gap-4 mt-8 justify-center">
               <div
-                onClick={() => signIn('google', { callbackUrl: '/' })}
+                onClick={() => signIn('google', { callbackUrl: '/profiles' })}
                 className="
-                  w-10
+                  w-10 
                   h-10
                   bg-white
                   rounded-full
@@ -112,24 +123,24 @@ const Auth = () => {
                   transition
                 "
               >
-                <FcGoogle size={30} />
+                <FcGoogle size={32} />
               </div>
               <div
-                onClick={() => signIn('github', { callbackUrl: '/' })}
+                onClick={() => signIn('github', { callbackUrl: '/profiles' })}
                 className="
-                  w-10
+                  w-10 
                   h-10
-                  bg-white
+                  bg-white 
                   rounded-full
-                  flex
+                  flex 
                   items-center
-                  justify-center
+                  justify-center 
                   cursor-pointer
                   hover:opacity-80
                   transition
                 "
               >
-                <FaGithub size={30} />
+                <FaGithub size={32} />
               </div>
             </div>
             <p className="text-neutral-500 mt-12">
@@ -140,7 +151,7 @@ const Auth = () => {
                 onClick={toggleVariant}
                 className="text-white ml-1 hover:underline cursor-pointer"
               >
-                {variant === 'login' ? 'Create and account' : 'Login'}
+                {variant === 'login' ? 'Create an account' : 'Login'}
               </span>
             </p>
           </div>
