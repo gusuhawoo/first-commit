@@ -27,7 +27,15 @@ const Navbar = () => {
             lg:flex
           "
         >
-          <NavbarItem />
+          <NavbarItem label="Home" />
+          <NavbarItem label="Series" />
+          <NavbarItem label="Films" />
+          <NavbarItem label="New & Popular" />
+          <NavbarItem label="My List" />
+          <NavbarItem label="Browse by languages" />
+        </div>
+        <div className="lg:hidden flex flex-row items-center gap-2 ml-8 cursor-pointer relative">
+          <p className="text-white text-sm">Browse</p>
         </div>
       </div>
     </nav>
